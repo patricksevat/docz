@@ -5,12 +5,10 @@ import { HashRouter, BrowserRouter } from 'react-router-dom'
 
 import { state, ThemeConfig, TransformFn } from './state'
 import { ErrorBoundary } from './components/ErrorBoundary'
-import { DataServer } from './components/DataServer'
-import { ScrollToTop } from './utils/ScrollToTop'
+import { setupDataServer } from './utils/setupDataServer'
 
 // tslint:disable-next-line
 import db from '~db'
-
 declare var BASE_URL: string
 
 interface ThemeProps {
@@ -28,6 +26,8 @@ export function theme(
 ): ThemeReturn {
   return WrappedComponent => {
     const Theme: SFC<ThemeProps> = props => {
+      setupDataServer(props.websocketUrl)
+
       const { wrapper: Wrapper, hashRouter } = props
       const Router = (props: any) =>
         Boolean(hashRouter) ? (
@@ -47,11 +47,7 @@ export function theme(
       return (
         <ErrorBoundary>
           <state.Provider initial={{ ...db, themeConfig, transform }}>
-            <DataServer websocketUrl={props.websocketUrl}>
-              <Router basename={BASE_URL}>
-                <ScrollToTop>{wrapped}</ScrollToTop>
-              </Router>
-            </DataServer>
+            <Router basename={BASE_URL}>{wrapped}</Router>
           </state.Provider>
         </ErrorBoundary>
       )
