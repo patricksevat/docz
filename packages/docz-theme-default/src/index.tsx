@@ -10,10 +10,12 @@ import { mq } from './styles/responsive'
 import * as components from './components/ui'
 import * as modes from './styles/modes'
 
-// tslint:disable
 const mergeTheme = (config: any) => (old: any) => ({
   ...old,
-  docz: Object.assign({}, config.themeConfig, { mq }),
+  docz: {
+    ...config.themeConfig,
+    mq,
+  },
 })
 
 const Theme = () => {
@@ -24,7 +26,7 @@ const Theme = () => {
         components={{
           page: components.Page,
           notFound: components.NotFound,
-          render: components.Render,
+          playground: components.Playground,
           blockquote: components.Blockquote,
           h1: components.H1,
           h2: components.H2,

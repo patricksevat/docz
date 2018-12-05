@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { SFC, Fragment, Component } from 'react'
-import { RenderComponentProps, useConfig } from 'docz'
+import { PlaygroundProps as BasePlaygroundProps, useConfig } from 'docz'
 import { LiveProvider, LiveError, LivePreview } from 'react-live'
 import styled, { css } from 'react-emotion'
 import lighten from 'polished/lib/color/lighten'
@@ -139,12 +139,12 @@ const parse = (position: number, key: string, defaultValue: any) => {
   return obj ? getter(obj, key) : defaultValue
 }
 
-export interface RenderProps extends RenderComponentProps {
+export interface PlaygroundProps extends BasePlaygroundProps {
   config?: any
   showEditor?: boolean
 }
 
-export interface RenderState {
+export interface PlaygroundState {
   fullscreen: boolean
   width: string
   height: string
@@ -153,8 +153,8 @@ export interface RenderState {
   showEditor: boolean
 }
 
-class RenderBase extends Component<RenderProps, RenderState> {
-  public state: RenderState = {
+class PlaygroundBase extends Component<PlaygroundProps, PlaygroundState> {
+  public state: PlaygroundState = {
     fullscreen: parse(this.props.position, 'fullscreen', false),
     width: parse(this.props.position, 'width', '100%'),
     height: parse(this.props.position, 'height', '100%'),
@@ -163,7 +163,10 @@ class RenderBase extends Component<RenderProps, RenderState> {
     showEditor: Boolean(this.props.showEditor),
   }
 
-  public componentDidUpdate(pProps: RenderProps, pState: RenderState): void {
+  public componentDidUpdate(
+    pProps: PlaygroundProps,
+    pState: PlaygroundState
+  ): void {
     if (pState.fullscreen !== this.state.fullscreen) {
       this.toggleBodyOverlayClass()
     }
@@ -360,10 +363,10 @@ class RenderBase extends Component<RenderProps, RenderState> {
   }
 }
 
-export const Render: SFC<RenderProps> = props => {
+export const Playground: SFC<PlaygroundProps> = props => {
   const config = useConfig()
   return (
-    <RenderBase
+    <PlaygroundBase
       {...props}
       config={config}
       showEditor={getter(config, 'themeConfig.showPlaygroundEditor')}
