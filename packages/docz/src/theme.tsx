@@ -5,7 +5,7 @@ import { HashRouter, BrowserRouter } from 'react-router-dom'
 
 import { state, ThemeConfig, TransformFn } from './state'
 import { ErrorBoundary } from './components/ErrorBoundary'
-import { setupDataServer } from './utils/setupDataServer'
+import { useDataServer } from './hooks/useDataServer'
 
 // tslint:disable-next-line
 import db from '~db'
@@ -26,7 +26,7 @@ export function theme(
 ): ThemeReturn {
   return WrappedComponent => {
     const Theme: SFC<ThemeProps> = props => {
-      setupDataServer(props.websocketUrl)
+      useDataServer(props.websocketUrl)
 
       const { wrapper: Wrapper, hashRouter } = props
       const Router = (props: any) =>
