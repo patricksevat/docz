@@ -22,7 +22,7 @@ const Heading = styled('h2')`
   padding-bottom: 5px;
   ${p => p.theme.docz.mq(get('styles.h2')(p))};
 
-  &:hover ${Icon.toString()} {
+  &:hover .Link--Icon {
     opacity: 1;
   }
 `
@@ -30,7 +30,7 @@ const Heading = styled('h2')`
 export const H2: SFC<React.HTMLAttributes<any>> = ({ children, ...props }) => (
   <Heading {...props}>
     <Link aria-hidden to={{ hash: `#${props.id}` }}>
-      <Icon height={20} />
+      <Icon className="Link--Icon" height={20} />
     </Link>
     {children}
   </Heading>
