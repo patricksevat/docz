@@ -10,16 +10,18 @@ import { getFullImports, getImportsVariables } from 'docz-utils/lib/imports'
 const isPlayground = (name: string) => name === 'Playground'
 
 const addComponentsProps = (
-  scopes: string[],
-  imports: string[],
-  cwd: string,
-  useCodeSandbox: boolean
+scopes: string[],
+imports: string[],
+cwd: string,
+useCodeSandbox: boolean,
+convertSelfClosingCustomElements: boolean
 ) => async (node: any, idx: number) => {
   const name = componentName(node.value)
   const tagOpen = new RegExp(`^\\<${name}`)
 
   if (isPlayground(name)) {
-    const formatted = await format(nodeToString(node))
+    const formatted = await format(nodeToString(node, convertSelfClosingCustomElements))
+
     const code = formatted.slice(1, Infinity)
     const scope = `{props: this ? this.props : props,${scopes.join(',')}}`
     const child = sanitizeCode(removeTags(code))
@@ -43,10 +45,11 @@ const addComponentsProps = (
 export interface PluginOpts {
   root: string
   useCodeSandbox: boolean
+  convertSelfClosingCustomElements: boolean
 }
 
 export default (opts: PluginOpts) => (tree: any, fileInfo: any) => {
-  const { root, useCodeSandbox } = opts
+  const { root, useCodeSandbox, convertSelfClosingCustomElements } = opts
   const importNodes = tree.children.filter((node: any) => is('import', node))
   const imports: string[] = flatten(importNodes.map(getFullImports))
   const scopes: string[] = flatten(importNodes.map(getImportsVariables))
@@ -55,7 +58,15 @@ export default (opts: PluginOpts) => (tree: any, fileInfo: any) => {
 
   const nodes = tree.children
     .filter((node: any) => is('jsx', node))
-    .map(addComponentsProps(scopes, imports, fileCwd, useCodeSandbox))
+    .map(
+      addComponentsProps(
+        scopes,
+        imports,
+        fileCwd,
+        useCodeSandbox,
+        convertSelfClosingCustomElements
+      )
+    )
 
   return Promise.all(nodes).then(() => tree)
 }

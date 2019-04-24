@@ -73,6 +73,7 @@ export interface Argv {
   websocketHost: string
   native: boolean
   codeSandbox: boolean
+  convertSelfClosingCustomElements: boolean
   sourcemaps: boolean
   /* template args */
   title: string
